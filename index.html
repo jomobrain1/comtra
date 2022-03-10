@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>comtrade</title>
+    <style>
+        
+.user-list li.hide{
+    display: none;
+}
+.product_img{
+    width: 100px;
+    height: 75px;
+}
+
+.a{
+    text-decoration: none;
+    background-color: #48d;
+    padding: 3px 20px;
+    border-radius: 7px;
+    color: #fff;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -ms-border-radius: 7px;
+    -o-border-radius: 7px;
+}
+#results{
+    margin-top: -10px;    
+    list-style: none;   
+    max-width: 200px;
+    background-color: #ecf0f3;
+}
+.added-li{
+    border: solid red #669900;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <input type="text" id="filter"><br>
+        <ul id="results" class="user-list">
+           <li class="added-li">          
+           </li>
+        </ul>
+    </div>
+   
+    <script>
+        
+const user=document.getElementById("results")
+const filter=document.getElementById("filter")
+const listItems=[]
+const products="https://comtra.co.ke/api/products"
+const baseUrl="https://comtra.co.ke"
+
+getData()
+user.style.display="none"
+filter.oninput=(e)=>{
+    if(e.target.value==""){
+        user.style.display="none"        
+    }else{
+        user.style.display="block"
+    }
+
+filterData(e.target.value)
+
+}
+async function getData(){
+const res =await fetch(products)
+
+
+const results=await res.json()
+
+user.innerHTML=''
+results.forEach(result=>{
+   
+ const li=document.createElement('li')
+ listItems.push(li)
+ 
+ li.innerHTML=`
+     <h4>${result.name}</h4>      
+     <img class="product_img" 
+     src="${baseUrl}/api/file/${result.folderName}/${result.pictureUrls[0]}" >
+     <h4><a class="a" href="${baseUrl}/product/${result.id}">view</a> </h4> 
+       `
+     li.classList.add("added-li")
+ user.appendChild(li)
+})}
+
+function filterData(searchTerm){
+listItems.forEach(item=>{
+    let condition=item.innerText.toLowerCase().includes(searchTerm.toLowerCase())
+ if(condition){
+     item.classList.remove('hide')
+ }else{
+     item.classList.add('hide')
+ }
+})
+
+}
+    </script>
+</body>
+</html>
